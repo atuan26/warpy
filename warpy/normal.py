@@ -2,24 +2,24 @@ import ctypes
 import sys
 from typing import Optional
 
-from warpd import lib, platform
-from warpd.config import (
+from warpy import lib, platform
+from warpy.config import (
     config_get,
     config_get_int,
     config_input_match,
     config_input_whitelist,
 )
-from warpd.histfile import histfile_add
-from warpd.history import hist_add, hist_get, hist_next, hist_prev
-from warpd.mouse import (
+from warpy.histfile import histfile_add
+from warpy.history import hist_add, hist_get, hist_next, hist_prev
+from warpy.mouse import (
     mouse_fast,
     mouse_normal,
     mouse_process_key,
     mouse_reset,
     mouse_slow,
 )
-from warpd.schemas import InputEvent
-from warpd.scroll import (
+from warpy.schemas import InputEvent
+from warpy.scroll import (
     SCROLL_DOWN,
     SCROLL_UP,
     scroll_accelerate,

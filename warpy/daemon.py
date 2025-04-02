@@ -1,8 +1,8 @@
-from warpd.config import config_input_whitelist, parse_config
-from warpd.hint import init_hints
-from warpd.mode_loop import mode_loop
-from warpd.mouse import init_mouse
-from warpd.schemas import Platform
+from warpy.config import config_input_whitelist, parse_config
+from warpy.hint import init_hints
+from warpy.mode_loop import mode_loop
+from warpy.mouse import init_mouse
+from warpy.schemas import Platform
 
 activation_keys = {
     "activation_key",

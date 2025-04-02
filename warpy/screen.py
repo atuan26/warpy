@@ -1,7 +1,7 @@
 import ctypes
 
-from warpd import lib, platform
-from warpd.schemas import Hint, Screen
+from warpy import lib, platform
+from warpy.schemas import Hint, Screen
 
 screen_chars = "jkl;asdfg"
 

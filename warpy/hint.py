@@ -1,8 +1,8 @@
 import ctypes
 
-from warpd.config import config_get, config_get_int
-from warpd.platform import platform
-from warpd.schemas import Hint
+from warpy.config import config_get, config_get_int
+from warpy.platform import platform
+from warpy.schemas import Hint
 
 MAX_HINTS = 2048
 MAX_BOXES = 64

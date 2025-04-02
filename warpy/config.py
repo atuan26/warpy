@@ -6,8 +6,8 @@ import sys
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
-from warpd.input import input_eq, input_parse_string
-from warpd.schemas import InputEvent
+from warpy.input import input_eq, input_parse_string
+from warpy.schemas import InputEvent
 
 
 class OptionType(Enum):

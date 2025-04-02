@@ -2,14 +2,14 @@ import ctypes
 from ctypes import byref, c_int
 from typing import Optional
 
-from warpd import schemas
-from warpd.config import config_input_match, config_input_whitelist
-from warpd.grid import grid_mode
-from warpd.hint import full_hint_mode, hintspec_mode, history_hint_mode
-from warpd.histfile import histfile_add
-from warpd.normal import normal_mode
-from warpd.schemas import InputEvent, Screen
-from warpd.screen import screen_selection_mode
+from warpy import schemas
+from warpy.config import config_input_match, config_input_whitelist
+from warpy.grid import grid_mode
+from warpy.hint import full_hint_mode, hintspec_mode, history_hint_mode
+from warpy.histfile import histfile_add
+from warpy.normal import normal_mode
+from warpy.schemas import InputEvent, Screen
+from warpy.screen import screen_selection_mode
 
 
 def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):

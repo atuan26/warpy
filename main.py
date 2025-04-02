@@ -16,13 +16,13 @@ import fcntl
 import os
 import sys
 
-from warpd import lib, schemas
-from warpd.config import config_get_int, config_print_options, parse_config
-from warpd.daemon import daemon_loop
-from warpd.hint import init_hints
-from warpd.mode_loop import mode_loop
-from warpd.mouse import init_mouse
-from warpd.platform import platform_run
+from warpy import lib, schemas
+from warpy.config import config_get_int, config_print_options, parse_config
+from warpy.daemon import daemon_loop
+from warpy.hint import init_hints
+from warpy.mode_loop import mode_loop
+from warpy.mouse import init_mouse
+from warpy.platform import platform_run
 
 
 def get_data_path(file="history"):

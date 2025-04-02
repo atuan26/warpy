@@ -1,6 +1,6 @@
 import ctypes
 
-from warpd.schemas import InputEvent, Screen
+from warpy.schemas import InputEvent, Screen
 
 lib = ctypes.CDLL("/home/tuanna/Documents/warpd/warpd/lib/linux_X.so")
 

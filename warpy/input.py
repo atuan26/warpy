@@ -1,13 +1,13 @@
 import ctypes
 
-from warpd.platform import (
+from warpy.platform import (
     platform,
     PLATFORM_MOD_ALT,
     PLATFORM_MOD_CONTROL,
     PLATFORM_MOD_META,
     PLATFORM_MOD_SHIFT,
 )
-from warpd.schemas import InputEvent
+from warpy.schemas import InputEvent
 
 cached_mods = {}
 

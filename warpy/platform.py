@@ -1,6 +1,6 @@
 import ctypes
 
-from warpd.schemas import InputEvent, Platform
+from warpy.schemas import InputEvent, Platform
 
 from .lib import lib
 

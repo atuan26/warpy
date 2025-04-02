@@ -1,6 +1,6 @@
 import ctypes
 
-from warpd.platform import platform
+from warpy.platform import platform
 
 v0 = vf = vd = a = a0 = a1 = ctypes.c_double(0)
 inc = ctypes.c_int(0)

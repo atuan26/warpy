@@ -1,4 +1,4 @@
-from warpd.schemas import InputEvent, Screen
+from warpy.schemas import InputEvent, Screen
 
 grid_width = 0
 grid_height = 0
