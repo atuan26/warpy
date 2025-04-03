@@ -19,10 +19,10 @@ last_selected_hint = ctypes.create_string_buffer(32)
 
 def init_hints():
     platform.init_hint(
-        config_get("hint_bgcolor"),
-        config_get("hint_fgcolor"),
+        config_get("hint_bgcolor").encode("utf-8"),
+        config_get("hint_fgcolor").encode("utf-8"),
         config_get_int("hint_border_radius"),
-        config_get("hint_font"),
+        config_get("hint_font").encode("utf-8"),
     )
 
 

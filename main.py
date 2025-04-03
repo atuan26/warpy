@@ -13,6 +13,7 @@ src/platform/linux/X/mouse.c src/platform/linux/X/screen.c \
 
 import argparse
 import fcntl
+import logging
 import os
 import sys
 
@@ -23,6 +24,8 @@ from warpy.hint import init_hints
 from warpy.mode_loop import mode_loop
 from warpy.mouse import init_mouse
 from warpy.platform import platform_run
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def get_data_path(file="history"):
@@ -41,7 +44,7 @@ def get_data_path(file="history"):
     return os.path.join(path, file)
 
 
-def get_config_path(file="configget_config_path"):
+def get_config_path(file="config"):
     """Get path to config file, creating directories if needed."""
     if os.getenv("XDG_CONFIG_HOME"):
         path = os.path.join(os.getenv("XDG_CONFIG_HOME", ""), "warpd")
@@ -154,7 +157,6 @@ def oneshot_main(platform: schemas.Platform):
         if drag_flag:
             platform.mouse_down(config_get_int("drag_button"))
 
-        breakpoint()
         ret = mode_loop(platform, mode, oneshot_flag, record_flag)
 
         if drag_flag:

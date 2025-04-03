@@ -1,7 +1,6 @@
 import json
+import logging
 import re
-
-#!/usr/bin/env python3
 import sys
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
@@ -11,8 +10,8 @@ from warpy.schemas import InputEvent
 
 
 class OptionType(Enum):
-    OPT_INT = 1
-    OPT_STRING = 2
+    OPT_STRING = 1
+    OPT_INT = 2
     OPT_KEY = 3
     OPT_BUTTON = 4
 
@@ -26,7 +25,6 @@ class ConfigEntry:
 
     def validate(self) -> bool:
         """Validate the config entry based on its type."""
-        print(f'\x1b[36m🔍 self = \x1b[32m{self.__dict__}\x1b[0m')
         if self.type == OptionType.OPT_INT:
             if not re.match(r"^-?\d+$", self.value):
                 print(f"ERROR: {self.value} must be a valid int", file=sys.stderr)
@@ -96,7 +94,7 @@ class OptionDefinition:
 
 
 class ConfigManager:
-    def __init__(self, default_config_path: str = "warpd/default_config.json"):
+    def __init__(self, default_config_path: str = "warpy/default_config.json"):
         self.entries: Dict[str, ConfigEntry] = {}
         self.option_definitions: Dict[str, OptionDefinition] = {}
         self.default_config_path = default_config_path
@@ -139,7 +137,6 @@ class ConfigManager:
 
     def get(self, key: str) -> str:
         """Get config value by key."""
-        breakpoint()
         if key in self.entries:
             return self.entries[key].value
 
@@ -215,6 +212,7 @@ class ConfigManager:
         for entry in self.entries.values():
             matches, idx = entry.matches_input(ev, config_key)
             if matches:
+                logging.debug(f"Matched {entry.key}, {config_key}")
                 return idx
 
         return 0

@@ -1,4 +1,5 @@
 import ctypes
+import logging
 import sys
 from typing import Optional
 
@@ -47,7 +48,8 @@ platform.input_next_event.restype = ctypes.POINTER(InputEvent)
 
 
 def redraw(scr, x, y, hide_cursor):
-    sw = sh = ctypes.c_int(0)
+    sw = ctypes.c_int(0)
+    sh = ctypes.c_int(0)
 
     platform.screen_get_dimensions(scr, ctypes.byref(sw), ctypes.byref(sh))
 
@@ -67,7 +69,7 @@ def redraw(scr, x, y, hide_cursor):
             ctypes.c_int(y.value - cursz // 2),
             ctypes.c_int(cursz),
             ctypes.c_int(cursz),
-            curcol,
+            curcol.encode("utf-8"),
         )
 
     indicator_positions = {
@@ -88,9 +90,10 @@ def redraw(scr, x, y, hide_cursor):
             ctypes.c_int(iy),
             ctypes.c_int(indicator_size),
             ctypes.c_int(indicator_size),
-            indicator_color,
+            indicator_color.encode("utf-8"),
         )
         platform.commit()
+    logging.debug(f'\x1b[36m🔍Current pos: x, y = \x1b[32m{x.value, y.value}\x1b[0m')
 
 
 def move(scr, x, y, hide_cursor):
@@ -106,9 +109,12 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
     scr = lib.get_screen(0)
 
     ev = InputEvent(0, False, 0)
-    on_time = off_time = ctypes.c_int()
-    sh = sw = ctypes.c_int()
-    mx = my = ctypes.c_int()
+    on_time = ctypes.c_int()
+    off_time = ctypes.c_int()
+    sh = ctypes.c_int()
+    sw = ctypes.c_int()
+    mx = ctypes.c_int()
+    my = ctypes.c_int()
     dragging = ctypes.c_int()
     show_cursor = not system_cursor
 
@@ -155,14 +161,12 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
     if not system_cursor:
         platform.mouse_hide()
 
-    # TODO
-    mouse_reset(ctypes.byref(scr))
+    mouse_reset(scr)
     redraw(scr, mx, my, not show_cursor)
 
     time = 0
     last_blink_update = 0
     while 1:
-        # TODO:
         config_input_whitelist(keys, len(keys))
         if start_ev is None:
             ev = platform.input_next_event(ctypes.c_int(10))
@@ -170,7 +174,7 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
             if ev:
                 ev = ev.contents
             else:
-                ev = InputEvent(0, False, 0)
+                ev = None
 
             time += 10
         else:
@@ -192,7 +196,7 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
                 last_blink_update = time
 
         scroll_tick()
-        if mouse_process_key(ev, "up", "down", "left", "right"):
+        if mouse_process_key(ev, "up", "down", "left", "right", scr):
             redraw(scr, mx, my, not show_cursor)
             continue
 
@@ -272,8 +276,8 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
         elif config_input_match(ev, "print"):
             print("%d %d %s\n", mx, my, lib.input_event_tostr(ev))
         else:
-            if config_input_match(ev, "buttons"):
-                btn = config_input_match(ev, "buttons")
+            if btn:=config_input_match(ev, "buttons"):
+                print(f'\x1b[36m🔍 btn = \x1b[32m{btn}\x1b[0m')
                 if oneshot:
                     print("%d %d\n", mx, my)
                     sys.exit(btn)
@@ -281,8 +285,7 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
                 hist_add(mx.value, my.value)
                 histfile_add(mx, my)
                 platform.mouse_click(btn)
-            elif config_input_match(ev, "oneshot_buttons"):
-                btn = config_input_match(ev, "oneshot_buttons")
+            elif btn:=config_input_match(ev, "oneshot_buttons"):
                 hist_add(mx.value, my.value)
                 platform.mouse_click(btn)
 
@@ -293,6 +296,8 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
 
                     if not ev:
                         break
+                    else:
+                        ev = ev.contents
 
                     if ev and ev.pressed and config_input_match(ev, "oneshot_buttons"):
                         platform.mouse_click(btn)

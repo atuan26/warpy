@@ -18,9 +18,8 @@ def input_parse_string(ev: InputEvent, s: str):
 
     ev.mods = 0
     ev.pressed = 1
-    print(f'\x1b[36m🔍 s = \x1b[32m{s}\x1b[0m')
 
-    while s[1] == "-":
+    while len(s) > 1 and s[1] == "-":
         match s[0]:
             case "A":
                 ev.mods |= PLATFORM_MOD_ALT
