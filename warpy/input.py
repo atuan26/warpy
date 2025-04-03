@@ -1,11 +1,11 @@
 import ctypes
 
 from warpy.platform import (
-    platform,
     PLATFORM_MOD_ALT,
     PLATFORM_MOD_CONTROL,
     PLATFORM_MOD_META,
     PLATFORM_MOD_SHIFT,
+    platform,
 )
 from warpy.schemas import InputEvent
 
@@ -40,13 +40,11 @@ def input_parse_string(ev: InputEvent, s: str):
         s += 2
 
     if s[0]:
-        shifted = 0
+        shifted = ctypes.c_int(0)
 
-        code = platform.input_lookup_code(
-            s.encode("utf-8"), ctypes.byref(ctypes.c_int(shifted))
-        )
+        code = platform.input_lookup_code(s.encode("utf-8"), ctypes.byref(shifted))
         ev.code = code
-        if shifted:
+        if shifted.value:
             ev.mods |= PLATFORM_MOD_SHIFT
 
         if not ev.code:

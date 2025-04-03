@@ -96,7 +96,7 @@ def redraw(scr, x, y, hide_cursor):
     logging.debug(f'\x1b[36m🔍Current pos: x, y = \x1b[32m{x.value, y.value}\x1b[0m')
 
 
-def move(scr, x, y, hide_cursor):
+def move(scr, x: ctypes.c_int, y: ctypes.c_int, hide_cursor):
     platform.mouse_move(scr, x, y)
     redraw(scr, x, y, hide_cursor)
 
@@ -233,7 +233,7 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
             next(scr, mx, my)
 
         if config_input_match(ev, "top"):
-            move(scr, mx, cursz // 2, not show_cursor)
+            move(scr, mx, ctypes.c_int(cursz // 2), not show_cursor)
         elif config_input_match(ev, "bottom"):
             move(scr, mx, ctypes.c_int(sh.value - cursz // 2), not show_cursor)
         elif config_input_match(ev, "middle"):
