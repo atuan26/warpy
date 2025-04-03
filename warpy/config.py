@@ -5,6 +5,7 @@ import sys
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
+from warpy.default_config import DEFAULT_CONFIG
 from warpy.input import input_eq, input_parse_string
 from warpy.schemas import InputEvent
 
@@ -94,40 +95,23 @@ class OptionDefinition:
 
 
 class ConfigManager:
-    def __init__(self, default_config_path: str = "warpy/default_config.json"):
+    def __init__(self):
         self.entries: Dict[str, ConfigEntry] = {}
         self.option_definitions: Dict[str, OptionDefinition] = {}
-        self.default_config_path = default_config_path
         self._load_default_options()
 
     def _load_default_options(self) -> None:
         """Load default options from JSON file."""
-        try:
-            with open(self.default_config_path, "r") as f:
-                default_options = json.load(f)
+        default_options = DEFAULT_CONFIG
 
-            for key, option_data in default_options.items():
-                option_type = OptionType(option_data["option_type"])
-                self.option_definitions[key] = OptionDefinition(
-                    key=key,
-                    val=option_data["val"],
-                    description=option_data["description"],
-                    option_type=option_type,
-                )
-        except FileNotFoundError:
-            print(
-                f"WARNING: Default config file {self.default_config_path} not found",
-                file=sys.stderr,
+        for key, option_data in default_options.items():
+            option_type = OptionType(option_data["option_type"])
+            self.option_definitions[key] = OptionDefinition(
+                key=key,
+                val=option_data["val"],
+                description=option_data["description"],
+                option_type=option_type,
             )
-        except json.JSONDecodeError:
-            print(f"ERROR: Invalid JSON in {self.default_config_path}", file=sys.stderr)
-            sys.exit(-1)
-        except KeyError as e:
-            print(
-                f"ERROR: Missing required key in {self.default_config_path}: {e}",
-                file=sys.stderr,
-            )
-            sys.exit(-1)
 
     def get_option_type(self, key: str) -> Optional[OptionType]:
         """Get the type of an option by key."""

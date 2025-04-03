@@ -1,4 +1,4 @@
-{
+DEFAULT_CONFIG = {
   "hint_activation_key": {
     "val": "A-M-x",
     "description": "Activates hint mode.",
