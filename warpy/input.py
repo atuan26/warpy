@@ -51,9 +51,7 @@ def input_parse_string(ev: InputEvent, s: str):
 
 def input_event_tostr(ev: InputEvent):
     s = []
-    name = platform.input_lookup_name(
-        ev.code, ctypes.c_int(1 if ev.modes & PLATFORM_MOD_SHIFT else 0)
-    )
+    name = platform.input_lookup_name(ev.code, 1 if ev.mods & PLATFORM_MOD_SHIFT else 0)
 
     if not ev:
         return "NULL"
@@ -65,7 +63,7 @@ def input_event_tostr(ev: InputEvent):
     if ev.mods & PLATFORM_MOD_META:
         s.append("M-")
 
-    s.append(name if name else "UNDEFINED")
+    s.append(name.decode() if name else "UNDEFINED")
 
     return "".join(s)
 

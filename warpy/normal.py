@@ -101,12 +101,10 @@ def move(scr, x: ctypes.c_int, y: ctypes.c_int, hide_cursor):
     redraw(scr, x, y, hide_cursor)
 
 
-def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputEvent]:
+def normal_mode(scr, start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputEvent]:
     cursz = config_get_int("cursor_size")
     system_cursor = config_get_int("normal_system_cursor")
     blink_interval = config_get("normal_blink_interval")
-
-    scr = lib.get_screen(0)
 
     ev = InputEvent(0, False, 0)
     on_time = ctypes.c_int()

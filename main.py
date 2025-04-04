@@ -118,22 +118,22 @@ CONFIG_PATH = get_config_path()
 def oneshot_main(platform: schemas.Platform):
     ret = 0
 
-    scr_ptr = lib.get_screen(0)  # TODO
+    scr = lib.get_screen(0)  # TODO
     parse_config(CONFIG_PATH)
     init_mouse()
     init_hints()
 
-    platform.mouse_get_position(scr_ptr, None, None)
+    platform.mouse_get_position(scr, None, None)
     if x_flag == -1 and y_flag == -1:
         if drag_flag:
             platform.mouse_down(config_get_int("drag_button"))
 
-        ret = mode_loop(platform, mode, oneshot_flag, record_flag)
+        ret = mode_loop(scr, platform, mode, oneshot_flag, record_flag)
 
         if drag_flag:
             platform.mouse_up(config_get_int("drag_button"))
     else:
-        platform.mouse_move(scr_ptr, x_flag, y_flag)
+        platform.mouse_move(scr, x_flag, y_flag)
 
     if click_flag:
         platform.mouse_click(click_flag)

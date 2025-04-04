@@ -8,11 +8,11 @@ from warpy.grid import grid_mode
 from warpy.hint import full_hint_mode, hintspec_mode, history_hint_mode
 from warpy.histfile import histfile_add
 from warpy.normal import normal_mode
-from warpy.schemas import InputEvent, Screen
+from warpy.schemas import InputEvent
 from warpy.screen import screen_selection_mode
 
 
-def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
+def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: int):
     mode = initial_mode
     rc = 0
     ev: Optional[InputEvent] = None
@@ -24,14 +24,14 @@ def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
         config_input_whitelist([], 0)
         match mode:
             case schemas.MODE_HISTORY:
-                if history_hint_mode() < 0:
+                if history_hint_mode(scr) < 0:
                     return rc
                 ev = None
                 mode = schemas.MODE_NORMAL
             case schemas.MODE_HINTSPEC:
                 hintspec_mode()
             case schemas.MODE_NORMAL:
-                ev = normal_mode(ev, oneshot)
+                ev = normal_mode(scr, ev, oneshot)
 
                 if config_input_match(ev, "history"):
                     mode = schemas.MODE_HISTORY
@@ -73,7 +73,6 @@ def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
         ):
             x = c_int()
             y = c_int()
-            scr = Screen()
             platform.mouse_get_position(ctypes.byref(scr), None, None)
             platform.mouse_get_position(None, byref(x), byref(y))
 
