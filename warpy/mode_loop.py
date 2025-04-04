@@ -19,6 +19,7 @@ def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
 
     while 1:
         btn = 0
+        print("NEW LOOP")
 
         config_input_whitelist([], 0)
         match mode:
@@ -27,10 +28,8 @@ def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
                     return rc
                 ev = None
                 mode = schemas.MODE_NORMAL
-                break
             case schemas.MODE_HINTSPEC:
                 hintspec_mode()
-                break
             case schemas.MODE_NORMAL:
                 ev = normal_mode(ev, oneshot)
 
@@ -44,12 +43,10 @@ def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
                     mode = schemas.MODE_GRID
                 elif config_input_match(ev, "screen"):
                     mode = schemas.MODE_SCREEN_SELECTION
-                elif config_input_match(ev, "oneshot_buttons") or not ev:
-                    return config_input_match(ev, "oneshot_buttons")
+                elif rc := config_input_match(ev, "oneshot_buttons") or not ev:
+                    return rc
                 elif config_input_match(ev, "exit") or not ev:
                     return 0
-
-                break
             case schemas.MODE_HINT2:
                 ...
             case schemas.MODE_HINT:
@@ -57,34 +54,34 @@ def mode_loop(platform, initial_mode: int, oneshot: int, record_history: int):
                     return rc
                 ev = None
                 mode = schemas.MODE_NORMAL
-                break
             case schemas.MODE_GRID:
                 ev = grid_mode()
                 if config_input_match(ev, "grid_exit"):
                     ev = None
                 mode = schemas.MODE_NORMAL
-                break
             case schemas.MODE_SCREEN_SELECTION:
                 screen_selection_mode()
                 mode = schemas.MODE_NORMAL
                 ev = None
-                break
             case schemas.MODE_SMART_HINT:
-                break
+                ...
 
-        btn = config_input_match(ev, "buttons")
-        if oneshot and initial_mode != schemas.MODE_NORMAL or btn:
-            x = y = c_int()
+        if (
+            oneshot
+            and initial_mode != schemas.MODE_NORMAL
+            or (btn := config_input_match(ev, "buttons"))
+        ):
+            x = c_int()
+            y = c_int()
             scr = Screen()
             platform.mouse_get_position(ctypes.byref(scr), None, None)
             platform.mouse_get_position(None, byref(x), byref(y))
 
             if record_history:
-                histfile_add(x, y)
+                histfile_add(x.value, y.value)
 
             if mode == schemas.MODE_HINTSPEC:
                 ...
-                # print(f"{x} {y} {1}#last_selected_hint}")
             else:
                 print(x, y)
 

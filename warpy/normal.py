@@ -47,7 +47,7 @@ platform.input_next_event.argtypes = [ctypes.c_int]
 platform.input_next_event.restype = ctypes.POINTER(InputEvent)
 
 
-def redraw(scr, x, y, hide_cursor):
+def redraw(scr, x: ctypes.c_int, y: ctypes.c_int, hide_cursor):
     sw = ctypes.c_int(0)
     sh = ctypes.c_int(0)
 
@@ -173,6 +173,7 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
 
             if ev:
                 ev = ev.contents
+                logging.debug(f'\x1b[36m🔍 Pressed = \x1b[32m{ev.code, ev.mods, ev.pressed}\x1b[0m')
             else:
                 ev = None
 
@@ -245,12 +246,16 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
         elif config_input_match(ev, "hist_back"):
             hist_add(mx.value, my.value)
             hist_prev()
-            get, mx, my = hist_get()
+            get, x, y = hist_get()
+            mx = ctypes.c_int(x)
+            my = ctypes.c_int(y)
 
             move(scr, mx, my, not show_cursor)
         elif config_input_match(ev, "hist_forward"):
             hist_next()
-            get, mx, my = hist_get()
+            get, x, y = hist_get()
+            mx = ctypes.c_int(x)
+            my = ctypes.c_int(y)
 
             move(scr, mx, my, not show_cursor)
         elif config_input_match(ev, "drag"):
@@ -283,7 +288,7 @@ def normal_mode(start_ev: Optional[InputEvent], oneshot: int) -> Optional[InputE
                     sys.exit(btn)
 
                 hist_add(mx.value, my.value)
-                histfile_add(mx, my)
+                histfile_add(mx.value, my.value)
                 platform.mouse_click(btn)
             elif btn:=config_input_match(ev, "oneshot_buttons"):
                 hist_add(mx.value, my.value)

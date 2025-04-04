@@ -1,4 +1,3 @@
-import json
 import logging
 import re
 import sys
@@ -150,7 +149,7 @@ class ConfigManager:
         self.entries.clear()
 
         # Set defaults from option definitions
-        for key, option in self.option_definitions.items():
+        for key, option in reversed(self.option_definitions.items()):
             self.add(key, option.val)
 
         # Open and parse user config file
@@ -196,7 +195,7 @@ class ConfigManager:
         for entry in self.entries.values():
             matches, idx = entry.matches_input(ev, config_key)
             if matches:
-                logging.debug(f"Matched {entry.key}, {config_key}")
+                logging.debug("\x1b[36m🔍 Matched key: \x1b[32m%s\x1b[0m" % config_key)
                 return idx
 
         return 0

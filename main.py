@@ -21,41 +21,12 @@ from warpy import lib, schemas
 from warpy.config import config_get_int, config_print_options, parse_config
 from warpy.daemon import daemon_loop
 from warpy.hint import init_hints
+from warpy.histfile import get_config_path
 from warpy.mode_loop import mode_loop
 from warpy.mouse import init_mouse
 from warpy.platform import platform_run
 
-logging.basicConfig(level=logging.DEBUG)
-
-
-def get_data_path(file="history"):
-    """Get path to data file, creating directories if needed."""
-    if os.getenv("XDG_DATA_DIR"):
-        path = os.path.join(os.getenv("XDG_DATA_DIR", ""), "warpd")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-    else:
-        path = os.path.join(os.getenv("HOME", ""), ".local")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-        path = os.path.join(path, "share")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-        path = os.path.join(path, "warpd")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-
-    return os.path.join(path, file)
-
-
-def get_config_path(file="config"):
-    """Get path to config file, creating directories if needed."""
-    if os.getenv("XDG_CONFIG_HOME"):
-        path = os.path.join(os.getenv("XDG_CONFIG_HOME", ""), "warpd")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-    else:
-        path = os.path.join(os.getenv("HOME", ""), ".config")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-        path = os.path.join(path, "warpd")
-        os.makedirs(path, mode=0o700, exist_ok=True)
-
-    return os.path.join(path, file)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 def lock():

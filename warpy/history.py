@@ -1,86 +1,93 @@
-import ctypes
+class History:
+    def __init__(self):
+        self.BUF_SZ = 16
+        self.head = 0
+        self.tail = 0
+        self.full = False
+        self.cur = 0
+        self.buf = [{"x": 0, "y": 0} for _ in range(self.BUF_SZ)]
 
-BUF_SZ = 16
+    def add(self, x, y):
+        if self.full:
+            self.tail = (self.tail + 1) % self.BUF_SZ
+
+        self.buf[self.head]["x"] = x
+        self.buf[self.head]["y"] = y
+
+        self.cur = self.head
+        self.head = (self.head + 1) % self.BUF_SZ
+        self.full = self.head == self.tail
+
+    def truncate_hist(self):
+        if not self.full and self.tail == self.head:
+            return
+
+        self.head = (self.cur + 1) % self.BUF_SZ
+        self.full = self.tail == self.head
+
+    def hist_get(self):
+        if not self.full and self.tail == self.head:
+            return None, None
+
+        x = self.buf[self.cur]["x"]
+        y = self.buf[self.cur]["y"]
+
+        return x, y
+
+    def hist_add(self, x, y):
+        cx, cy = self.hist_get()
+
+        if cx is not None and cy is not None and cx == x and cy == y:
+            return  # dedup
+
+        self.truncate_hist()
+        self.add(x, y)
+
+    def hist_prev(self):
+        if not self.full and self.tail == self.head:
+            return
+
+        if self.cur == self.tail:
+            return
+
+        self.cur = self.BUF_SZ - 1 if self.cur == 0 else self.cur - 1
+
+    def hist_next(self):
+        if not self.full and self.tail == self.head:
+            return
+
+        n = (self.cur + 1) % self.BUF_SZ
+
+        if n != self.head:
+            self.cur = n
 
 
-class Point(ctypes.Structure):
-    _fields_ = [("x", ctypes.c_int), ("y", ctypes.c_int)]
+_history = History()
 
 
-class History(ctypes.Structure):
-    _fields_ = [
-        ("head", ctypes.c_size_t),
-        ("tail", ctypes.c_size_t),
-        ("full", ctypes.c_int),
-        ("cur", ctypes.c_size_t),
-        ("buf", Point * BUF_SZ),
-    ]
-
-
-hist = History()
-
-
-def add(x: int, y: int):
-    global hist
-
-    if hist.full:
-        hist.tail = (hist.tail + 1) % BUF_SZ
-
-    hist.buf[hist.head].x = x
-    hist.buf[hist.head].y = y
-
-    hist.cur = hist.head
-    hist.head = (hist.head + 1) % BUF_SZ
-    hist.full = int(hist.head == hist.tail)
-
-
-def truncate_hist():
-    global hist
-
-    if not (hist.full and hist.tail == hist.head):
-        return
-
-    hist.read = (hist.cur + 1) % BUF_SZ
-    hist.full = hist.tail == hist.read
-
-
-def hist_get(*args):
-    global hist
-
-    if not hist.full and hist.tail == hist.head:
-        return None, ctypes.c_int(), ctypes.c_int()
-
-    return 1, ctypes.c_int(hist.buf[hist.cur].x), ctypes.c_int(hist.buf[hist.cur].y)
+def hist_get(x=None, y=None) -> tuple[int, int, int]:
+    """
+    Get current history position coordinates.
+    Returns -1 if no history exists, 0 otherwise.
+    Updates x and y by reference in the original C API,
+    but here returns the values directly.
+    """
+    x_val, y_val = _history.hist_get()
+    if x_val is None or y_val is None:
+        return -1, 0, 0
+    return 0, x_val, y_val
 
 
 def hist_add(x: int, y: int):
-    get, cx, cy = hist_get()
-    if not get and cx.value == x and cy.value == y:
-        return
-
-    truncate_hist()
-    add(x, y)
+    """Add a position to history"""
+    _history.hist_add(x, y)
 
 
 def hist_prev():
-    global hist
-
-    if not hist.full and hist.tail == hist.head:
-        return
-
-    if hist.cur == hist.tail:
-        return
-
-    hist.cur = BUF_SZ - 1 if hist.cur == 0 else hist.cur - 1
+    """Move to previous history position"""
+    _history.hist_prev()
 
 
 def hist_next():
-    global hist
-
-    if not hist.full and hist.tail == hist.head:
-        return
-
-    n = (hist.cur + 1) % BUF_SZ
-
-    if n != hist.head:
-        hist.cur = n
+    """Move to next history position"""
+    _history.hist_next()

@@ -13,7 +13,7 @@ cached_mods = {}
 
 
 def input_parse_string(ev: InputEvent, s: str):
-    if not s or s[0] == 0:
+    if not s or len(s) == 0:
         return 0
 
     ev.mods = 0
@@ -23,23 +23,19 @@ def input_parse_string(ev: InputEvent, s: str):
         match s[0]:
             case "A":
                 ev.mods |= PLATFORM_MOD_ALT
-                break
             case "M":
                 ev.mods |= PLATFORM_MOD_META
-                break
             case "S":
                 ev.mods |= PLATFORM_MOD_SHIFT
-                break
             case "C":
                 ev.mods |= PLATFORM_MOD_CONTROL
-                break
             case _:
                 print(f"{s} is not a valid modifier\n")
                 exit(-1)
 
-        s += 2
+        s = s[2:]
 
-    if s[0]:
+    if s:
         shifted = ctypes.c_int(0)
 
         code = platform.input_lookup_code(s.encode("utf-8"), ctypes.byref(shifted))
