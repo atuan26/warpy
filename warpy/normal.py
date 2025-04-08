@@ -280,7 +280,6 @@ def normal_mode(scr, start_ev: Optional[InputEvent], oneshot: int) -> Optional[I
             print("%d %d %s\n", mx, my, lib.input_event_tostr(ev))
         else:
             if btn:=config_input_match(ev, "buttons"):
-                print(f'\x1b[36m🔍 btn = \x1b[32m{btn}\x1b[0m')
                 if oneshot:
                     print("%d %d\n", mx, my)
                     sys.exit(btn)

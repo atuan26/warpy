@@ -269,11 +269,11 @@ def hintspec_mode():
     return _hint_manager.hint_selection(scr, hints[:n], n)
 
 
-def full_hint_mode(second_pass: int):
+def full_hint_mode(scr, second_pass: int):
     mx = ctypes.c_int()
     my = ctypes.c_int()
 
-    scr = platform.mouse_get_position(ctypes.byref(mx), ctypes.byref(my))
+    platform.mouse_get_position(ctypes.byref(scr), ctypes.byref(mx), ctypes.byref(my))
     hist_add(mx.value, my.value)
 
     hints = _hint_manager.generate_fullscreen_hints(scr)
