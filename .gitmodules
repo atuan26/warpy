@@ -1,3 +1,4 @@
 [submodule "warpd"]
 	path = warpd
 	url = git@github.com:atuan26/warpd.git
+	branch = master

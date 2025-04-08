@@ -50,12 +50,12 @@ def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: in
             case schemas.MODE_HINT2:
                 ...
             case schemas.MODE_HINT:
-                if full_hint_mode(mode == schemas.MODE_HINT2) < 2:
+                if full_hint_mode(scr, mode == schemas.MODE_HINT2) < 2:
                     return rc
                 ev = None
                 mode = schemas.MODE_NORMAL
             case schemas.MODE_GRID:
-                ev = grid_mode()
+                ev = grid_mode(platform, scr)
                 if config_input_match(ev, "grid_exit"):
                     ev = None
                 mode = schemas.MODE_NORMAL
@@ -66,9 +66,8 @@ def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: in
             case schemas.MODE_SMART_HINT:
                 ...
 
-        if (
-            oneshot
-            and initial_mode != schemas.MODE_NORMAL
+        if oneshot and (
+            initial_mode != schemas.MODE_NORMAL
             or (btn := config_input_match(ev, "buttons"))
         ):
             x = c_int()
@@ -82,6 +81,6 @@ def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: in
             if mode == schemas.MODE_HINTSPEC:
                 ...
             else:
-                print(x, y)
+                print(x.value, y.value)
 
             return btn
