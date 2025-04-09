@@ -1,3 +1,4 @@
+from warpy import lib
 from warpy.config import config_input_whitelist, parse_config
 from warpy.hint import init_hints
 from warpy.mode_loop import mode_loop
@@ -40,6 +41,5 @@ def daemon_loop(platform: Platform, config_path=None):
 
         config_input_whitelist(list(activation_keys), len(activation_keys))
 
-        # ... TODO
-
-        mode_loop(platform, mode, 0, 1)
+        scr = lib.get_screen(0)  # TODO
+        mode_loop(scr, platform, mode, 0, 1)

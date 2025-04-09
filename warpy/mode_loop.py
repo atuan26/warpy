@@ -48,7 +48,7 @@ def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: in
                 elif config_input_match(ev, "exit") or not ev:
                     return 0
             case schemas.MODE_HINT | schemas.MODE_HINT2:
-                if full_hint_mode(scr, mode == schemas.MODE_HINT2) < 2:
+                if full_hint_mode(scr, mode == schemas.MODE_HINT2) < 0:
                     return rc
                 ev = None
                 mode = schemas.MODE_NORMAL
