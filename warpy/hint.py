@@ -234,15 +234,13 @@ def init_hints():
     )
 
 
-def hintspec_mode():
-    scr = None
+def hintspec_mode(scr):
     sw = ctypes.c_int()
     sh = ctypes.c_int()
 
     hints = [HintModel() for _ in range(_hint_manager.MAX_HINTS)]
     n = 0
 
-    scr = platform.mouse_get_position(None, None)
     platform.screen_get_dimensions(scr, ctypes.byref(sw), ctypes.byref(sh))
 
     w, h = _hint_manager.get_hint_size(scr, sw, sh)
@@ -279,7 +277,7 @@ def full_hint_mode(scr, second_pass: int):
     hints = _hint_manager.generate_fullscreen_hints(scr)
     _hint_manager.nr_hints = len(hints)
 
-    if _hint_manager.hint_selection(scr, hints, _hint_manager.nr_hints) != 0:
+    if _hint_manager.hint_selection(scr, hints, _hint_manager.nr_hints):
         return -1
 
     if second_pass:

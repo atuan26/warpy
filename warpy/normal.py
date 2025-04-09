@@ -113,7 +113,7 @@ def normal_mode(scr, start_ev: Optional[InputEvent], oneshot: int) -> Optional[I
     sw = ctypes.c_int()
     mx = ctypes.c_int()
     my = ctypes.c_int()
-    dragging = ctypes.c_int()
+    dragging = False
     show_cursor = not system_cursor
 
     blink_values = list(map(int, blink_interval.split()))
@@ -202,7 +202,6 @@ def normal_mode(scr, start_ev: Optional[InputEvent], oneshot: int) -> Optional[I
         if not ev:
             continue
         elif config_input_match(ev, "scroll_down"):
-            print(f"\x1b[36m🔍 1 = \x1b[32m{1}\x1b[0m")
             redraw(scr, mx, my, 1)
 
             if ev.pressed:
@@ -230,6 +229,7 @@ def normal_mode(scr, start_ev: Optional[InputEvent], oneshot: int) -> Optional[I
                 mouse_normal()
         elif not ev.pressed:
             next(scr, mx, my)
+            continue
 
         if config_input_match(ev, "top"):
             move(scr, mx, ctypes.c_int(cursz // 2), not show_cursor)
