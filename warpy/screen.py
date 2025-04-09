@@ -1,6 +1,7 @@
 import ctypes
 
 from warpy import lib, platform
+from warpy.input import input_event_tostr
 from warpy.schemas import Hint, Screen
 
 screen_chars = "jkl;asdfg"
@@ -8,6 +9,7 @@ screen_chars = "jkl;asdfg"
 
 lib.get_screen.argtypes = [ctypes.c_int]
 lib.get_screen.restype = ctypes.POINTER(Screen)
+
 
 def screen_selection_mode():
     # Draw hints on screens
@@ -34,7 +36,12 @@ def screen_selection_mode():
     # Wait for key press
     while True:
         ev = platform.input_next_event(0)
-        if ev.contents.pressed:
+        if ev:
+            ev = ev.contents
+        else:
+            continue
+
+        if ev.pressed:
             break
 
     platform.input_ungrab_keyboard()
@@ -43,8 +50,8 @@ def screen_selection_mode():
     for i in range(n_screens):
         screen_ptr = lib.get_screen(i)
 
-        key = lib.input_event_tostr(ev)
-        if key.decode("utf-8") == screen_chars[i]:
+        key = input_event_tostr(ev)
+        if key == screen_chars[i]:
             w = ctypes.c_int()
             h = ctypes.c_int()
             platform.screen_get_dimensions(screen_ptr, ctypes.byref(w), ctypes.byref(h))

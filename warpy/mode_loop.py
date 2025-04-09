@@ -29,7 +29,7 @@ def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: in
                 ev = None
                 mode = schemas.MODE_NORMAL
             case schemas.MODE_HINTSPEC:
-                hintspec_mode()
+                hintspec_mode(scr)
             case schemas.MODE_NORMAL:
                 ev = normal_mode(scr, ev, oneshot)
 
@@ -47,9 +47,7 @@ def mode_loop(scr, platform, initial_mode: int, oneshot: int, record_history: in
                     return rc
                 elif config_input_match(ev, "exit") or not ev:
                     return 0
-            case schemas.MODE_HINT2:
-                ...
-            case schemas.MODE_HINT:
+            case schemas.MODE_HINT | schemas.MODE_HINT2:
                 if full_hint_mode(scr, mode == schemas.MODE_HINT2) < 2:
                     return rc
                 ev = None

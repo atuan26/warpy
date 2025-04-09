@@ -160,50 +160,26 @@ class Grid:
                 mx = (mx - self.grid_width // 2) + (self.grid_width // nc) * (
                     (idx - 1) % nc
                 )
-
                 self.grid_height //= nr
                 self.grid_width //= nc
                 mx += self.grid_width // 2
                 my += self.grid_height // 2
-
-                self.platform.mouse_move(self.scr, mx, my)
-                self.redraw(mx, my, False)
-
             if config_input_match(ev, "grid_cut_up"):
                 my -= self.grid_height // 4
                 self.grid_height //= 2
-
-                self.platform.mouse_move(self.scr, mx, my)
-                self.redraw(mx, my, False)
-
             elif config_input_match(ev, "grid_cut_down"):
                 my += self.grid_height // 4
                 self.grid_height //= 2
-
-                self.platform.mouse_move(self.scr, mx, my)
-                self.redraw(mx, my, False)
-
             elif config_input_match(ev, "grid_cut_left"):
                 mx -= self.grid_width // 4
                 self.grid_width //= 2
-
-                self.platform.mouse_move(self.scr, mx, my)
-                self.redraw(mx, my, False)
-
             elif config_input_match(ev, "grid_cut_right"):
                 mx += self.grid_width // 4
                 self.grid_width //= 2
-
-                self.platform.mouse_move(self.scr, mx, my)
-                self.redraw(mx, my, False)
-
-            elif config_input_match(ev, "buttons") or config_input_match(
-                ev, "oneshot_buttons"
-            ):
-                break
-
-            if (
-                config_input_match(ev, "grid")
+            elif (
+                config_input_match(ev, "oneshot_buttons")
+                or config_input_match(ev, "buttons")
+                or config_input_match(ev, "grid")
                 or config_input_match(ev, "hint")
                 or config_input_match(ev, "exit")
                 or config_input_match(ev, "drag")
@@ -211,7 +187,9 @@ class Grid:
             ):
                 break
 
-            self.redraw(mx, my, False)
+            if mx != x_ptr.value and my != y_ptr.value:
+                self.platform.mouse_move(self.scr, mx, my)
+                self.redraw(mx, my, False)
 
         config_input_whitelist(None, 0)
         self.platform.screen_clear(self.scr)

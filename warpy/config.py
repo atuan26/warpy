@@ -73,8 +73,7 @@ class ConfigEntry:
         idx = 1
 
         for tok in self.value.split():
-            ret = input_eq(ev, tok)
-            if ret:
+            if ret:= input_eq(ev, tok):
                 return idx, (ret == 2)
             idx += 1
 
@@ -205,11 +204,9 @@ class ConfigManager:
             print(f"{key}: {option.description} (default: {option.val})")
 
 
-# Global instance for compatibility with original API
 config_manager = ConfigManager()
 
 
-# For backward compatibility with the original C API
 def config_get(key: str) -> str:
     return config_manager.get(key)
 
